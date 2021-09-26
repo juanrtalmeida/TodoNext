@@ -1,16 +1,21 @@
 import { Button, Flex, Stack } from "@chakra-ui/react";
-import Head from "next/head";
-import Image from "next/image";
-import { getSession } from "next-auth/client";
-import React from "react";
+import React, { useEffect } from "react";
 import { SignInButton } from "../components/SignInButton";
 import { signOut, useSession } from "next-auth/client";
+import { useRouter } from "next/dist/client/router";
 
 export default function Home() {
   const [session] = useSession();
+  const { push } = useRouter();
+
+  useEffect(() => {
+    if (session) {
+      push("/welcome");
+    }
+  }, [session]);
   return (
     <Flex
-      h="100vh"
+      h="95vh"
       w="100vw"
       alignItems="center"
       justifyContent="center"
@@ -30,9 +35,7 @@ export default function Home() {
         <Stack spacing="4">
           {session ? (
             <>
-              <SignInButton
-                social={session ? session.user.name : ""}
-              ></SignInButton>
+              <SignInButton social={session.user.name}></SignInButton>
               <Button onClick={() => signOut()}>Sign Out</Button>
             </>
           ) : (
